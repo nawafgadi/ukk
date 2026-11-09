@@ -7,6 +7,11 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\TransactionController;
 
 // ==========================================
+// ROUTE UTAMA
+// ==========================================
+Route::redirect('/', '/login');
+
+// ==========================================
 // ROUTE AUTH
 // ==========================================
 Route::get('/login', [AuthController::class, 'login'])->name('login');
