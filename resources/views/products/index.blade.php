@@ -77,6 +77,7 @@
                 <thead>
                     <tr>
                         <th class="text-center" style="width: 60px;">No</th>
+                        <th class="text-center" style="width: 70px;">Foto</th>
                         <th>Nama Produk / Barang</th>
                         <th class="text-end">Harga Satuan</th>
                         <th class="text-center">Sisa Stok</th>
@@ -84,14 +85,30 @@
                         <th class="text-center" style="width: 160px;">Aksi</th>
                     </tr>
                 </thead>
-                <tbody>
-                    @forelse ($products as $product)
-                        <tr class="product-row">
-                            <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>
-                            <td>
-                                <div class="fw-bold text-dark product-name">{{ $product->nama_produk }}</div>
-                                <small class="text-muted">Kode ID: #PRD-{{ str_pad($product->id, 4, '0', STR_PAD_LEFT) }}</small>
-                            </td>
+                <tbody>                                                                                                                       
+        @forelse ($products as $product)                                                                                          
+            <tr class="product-row">                                                                                              
+                <td class="text-center fw-bold text-muted">{{ $loop->iteration }}</td>                                            
+                                                                                                                                  
+                <!-- ⬅️ TAMBAH BLOK INI: UNTUK TAMPILKAN FOTO -->                                                                 
+                <td class="text-center">                                                                                          
+                    @if ($product->foto)                                                                                          
+                        <img src="{{ asset('storage/' . $product->foto) }}"                                                       
+                             alt="{{ $product->nama_produk }}"                                                                    
+                             class="rounded-3 border shadow-sm"                                                                   
+                             style="width: 48px; height: 48px; object-fit: cover;">                                               
+                    @else                                                                                                         
+                        <div class="rounded-3 bg-light border d-inline-flex align-items-center justify-content-center text-muted" 
+                             style="width: 48px; height: 48px; font-size: 1.2rem;">                                               
+                            <i class="bi bi-image"></i>                                                                           
+                        </div>                                                                                                    
+                    @endif                                                                                                        
+                </td>                                                                                                             
+                                                                                                                                  
+                <td>                                                                                                              
+                    <div class="fw-bold text-dark product-name">{{ $product->nama_produk }}</div>                                 
+                    <small class="text-muted">Kode ID: #PRD-{{ str_pad($product->id, 4, '0', STR_PAD_LEFT) }}</small>             
+                </td>               
                             <td class="text-end">
                                 <span class="fw-bold text-success fs-6">
                                     Rp {{ number_format($product->harga, 0, ',', '.') }}
@@ -133,7 +150,7 @@
                         </tr>
                     @empty
                         <tr id="emptyRow">
-                            <td colspan="6" class="text-center py-5">
+                            <td colspan="7" class="text-center py-5">
                                 <div class="py-4">
                                     <i class="bi bi-box-seam text-muted display-4 d-block mb-3"></i>
                                     <h6 class="fw-bold text-dark">Katalog Produk Masih Kosong</h6>

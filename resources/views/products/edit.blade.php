@@ -23,12 +23,12 @@
                     </div>
                     <div>
                         <h4 class="fw-bold text-dark mb-0">Perbarui Data Produk</h4>
-                        <small class="text-muted">Edit nama, harga jual, atau kuantitas stok barang.</small>
+                        <small class="text-muted">Edit nama, harga jual, kuantitas stok, atau ganti foto produk.</small>
                     </div>
                 </div>
 
                 <!-- Form -->
-                <form action="{{ route('products.update', $product->id) }}" method="POST">
+                <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
 
@@ -72,7 +72,7 @@
                     </div>
 
                     <!-- Ketersediaan Stok Fisik -->
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label fw-semibold text-dark small">
                             Jumlah Stok Fisik <span class="text-danger">*</span>
                         </label>
@@ -91,6 +91,42 @@
                         @enderror
                     </div>
 
+                    <!-- Upload / Ganti Foto Produk -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark small">
+                            Foto Produk <span class="text-muted small">(Biarkan kosong jika tidak ingin mengganti)</span>
+                        </label>
+
+                        @if ($product->foto)
+                            <div class="mb-2 p-2 border rounded-3 bg-light d-flex align-items-center gap-3">
+                                <img src="{{ asset('storage/' . $product->foto) }}" alt="{{ $product->nama_produk }}" class="rounded border shadow-sm" style="width: 60px; height: 60px; object-fit: cover;">
+                                <div>
+                                    <small class="fw-bold text-dark d-block">Foto Saat Ini</small>
+                                    <small class="text-muted" style="font-size: 0.75rem;">Pilih file baru di bawah ini jika ingin menggantinya.</small>
+                                </div>
+                            </div>
+                        @endif
+
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-image"></i></span>
+                            <input type="file"
+                                   name="foto"
+                                   class="form-control @error('foto') is-invalid @enderror"
+                                   accept="image/png, image/jpeg, image/jpg, image/webp"
+                                   onchange="previewGambar(this)">
+                        </div>
+                        <div class="form-text small text-muted">Format: JPG, JPEG, PNG, WEBP (Maksimal 2MB).</div>
+                        @error('foto')
+                            <small class="text-danger mt-1 d-block">{{ $message }}</small>
+                        @enderror
+
+                        <!-- Preview Gambar Baru -->
+                        <div class="mt-3 text-center d-none" id="previewContainer">
+                            <small class="text-muted d-block mb-1">Preview Foto Baru:</small>
+                            <img id="previewImg" src="#" alt="Preview Foto Baru" class="rounded-3 border shadow-sm" style="max-height: 140px; object-fit: cover;">
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 pt-2">
                         <a href="{{ route('products.index') }}" class="btn btn-outline-secondary rounded-pill px-4 flex-fill fw-semibold">
@@ -107,4 +143,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    function previewGambar(input) {
+        const preview = document.getElementById('previewImg');
+        const container = document.getElementById('previewContainer');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                container.classList.remove('d-none');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 @endsection

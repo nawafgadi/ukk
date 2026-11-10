@@ -28,7 +28,7 @@
                 </div>
 
                 <!-- Form -->
-                <form action="{{ route('products.store') }}" method="POST">
+                <form action="{{ route('products.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
                     <!-- Nama Produk -->
@@ -73,7 +73,7 @@
                     </div>
 
                     <!-- Ketersediaan Stok Fisik -->
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label class="form-label fw-semibold text-dark small">
                             Jumlah Stok Fisik Awal <span class="text-danger">*</span>
                         </label>
@@ -93,6 +93,31 @@
                         @enderror
                     </div>
 
+                    <!-- Upload Foto Produk -->
+                    <div class="mb-4">
+                        <label class="form-label fw-semibold text-dark small">
+                            Foto Produk <span class="text-muted small">(Opsional)</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-image"></i></span>
+                            <input type="file"
+                                   name="foto"
+                                   id="inputFoto"
+                                   class="form-control @error('foto') is-invalid @enderror"
+                                   accept="image/png, image/jpeg, image/jpg, image/webp"
+                                   onchange="previewGambar(this)">
+                        </div>
+                        <div class="form-text small text-muted">Format: JPG, JPEG, PNG, WEBP (Maksimal 2MB).</div>
+                        @error('foto')
+                            <small class="text-danger mt-1 d-block">{{ $message }}</small>
+                        @enderror
+
+                        <!-- Preview Gambar -->
+                        <div class="mt-3 text-center d-none" id="previewContainer">
+                            <img id="previewImg" src="#" alt="Preview Foto" class="rounded-3 border shadow-sm" style="max-height: 140px; object-fit: cover;">
+                        </div>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="d-flex gap-2 pt-2">
                         <a href="{{ route('products.index') }}" class="btn btn-outline-secondary rounded-pill px-4 flex-fill fw-semibold">
@@ -109,4 +134,19 @@
         </div>
     </div>
 </div>
+
+<script>
+    function previewGambar(input) {
+        const preview = document.getElementById('previewImg');
+        const container = document.getElementById('previewContainer');
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                container.classList.remove('d-none');
+            }
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+</script>
 @endsection

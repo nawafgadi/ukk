@@ -38,9 +38,18 @@
                 <div class="row g-3" id="posProductGrid">
                     @forelse ($products as $product)
                         <div class="col-6 col-sm-4 col-md-4 col-xl-3 pos-product-item">
-                            <div class="card-custom card-custom-hover h-100 p-3 d-flex flex-column justify-content-between border">
+                            <div class="card-custom card-custom-hover h-100 p-2 p-sm-3 d-flex flex-column justify-content-between border">
                                 <div>
-                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <!-- Foto Produk di Kasir -->
+                                    @if ($product->foto)
+                                        <img src="{{ asset('storage/' . $product->foto) }}" alt="{{ $product->nama_produk }}" class="rounded-3 w-100 mb-2 border shadow-sm" style="height: 100px; object-fit: cover;">
+                                    @else
+                                        <div class="rounded-3 bg-light border d-flex align-items-center justify-content-center text-muted w-100 mb-2" style="height: 100px; font-size: 1.8rem;">
+                                            <i class="bi bi-box-seam"></i>
+                                        </div>
+                                    @endif
+
+                                    <div class="d-flex justify-content-between align-items-start mb-1">
                                         <span class="badge {{ $product->stok <= 5 ? 'bg-warning-subtle text-warning-emphasis' : 'bg-success-subtle text-success' }} rounded-pill px-2 py-1 small fw-semibold">
                                             Stok: {{ $product->stok }}
                                         </span>
@@ -48,7 +57,7 @@
                                     <h6 class="fw-bold text-dark mb-1 product-title text-truncate" title="{{ $product->nama_produk }}">
                                         {{ $product->nama_produk }}
                                     </h6>
-                                    <div class="fw-bold text-success fs-6 mb-3">
+                                    <div class="fw-bold text-success fs-6 mb-2">
                                         Rp {{ number_format($product->harga, 0, ',', '.') }}
                                     </div>
                                 </div>
