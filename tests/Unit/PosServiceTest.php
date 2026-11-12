@@ -20,26 +20,26 @@
          */                                                                                                                       
         public function test_diskon_level_0_tidak_ada_diskon(): void                                                              
         {                                                                                                                         
-            $diskon = $this->pos->hitungDiskon(30000);                                                                            
+            $diskon = $this->pos->hitungDiskon(10000);                                                                            
             $this->assertEquals(0, $diskon);                                                                                      
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
          * TC-02: Subtotal 50.000–99.999 → diskon 10%.                                                                            
          */                                                                                                                       
-        public function test_diskon_level_1_sepuluh_persen(): void                                                                
+        public function test_diskon_level_1_limapersen_persen(): void                                                                
         {                                                                                                                         
-            $diskon = $this->pos->hitungDiskon(58000);                                                                            
-            $this->assertEquals(5800, $diskon);                                                                                   
+            $diskon = $this->pos->hitungDiskon(100000);                                                                            
+            $this->assertEquals(5000, $diskon);                                                                                   
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
-         * TC-03: Subtotal >= 100.000 → diskon 15%.                                                                               
+         * TC-03: Subtotal >= 300.000 → diskon 10%.                                                                               
          */                                                                                                                       
         public function test_diskon_level_2_limabelas_persen(): void                                                              
         {                                                                                                                         
-            $diskon = $this->pos->hitungDiskon(120000);                                                                           
-            $this->assertEquals(18000, $diskon);                                                                                  
+            $diskon = $this->pos->hitungDiskon(300000);                                                                           
+            $this->assertEquals(30000, $diskon);                                                                                  
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
@@ -48,8 +48,8 @@
         public function test_hitung_pajak_sepuluh_persen(): void                                                                  
         {                                                                                                                         
             $hasil = $this->pos->hitungTotal(58000);
-            $this->assertEquals(52200, $hasil['dpp']);
-            $this->assertEquals(5220, $hasil['pajak']);
+            $this->assertEquals(58000, $hasil['dpp']);
+            $this->assertEquals(5800, $hasil['pajak']);
         }
 
         /**
@@ -57,10 +57,10 @@
          */
         public function test_hitung_pajak_duapuluh_persen_jika_dpp_seratus_ribu(): void
         {
-            // Subtotal = 120.000, Diskon 15% = 18.000, DPP = 102.000 (>= 100rb) -> Pajak 20% = 20.400
+            // Subtotal = 120.000, Diskon 10% = 12.000, DPP = 108.000 (>= 100rb) -> Pajak 20% = 21.600
             $hasil = $this->pos->hitungTotal(120000);
-            $this->assertEquals(102000, $hasil['dpp']);
-            $this->assertEquals(20400, $hasil['pajak']);
+            $this->assertEquals(114000, $hasil['dpp']);
+            $this->assertEquals(22800, $hasil['pajak']);
             $this->assertEquals(20, $hasil['persen_pajak']);
         }                                                                                                                         
                                                                                                                                   
@@ -70,7 +70,7 @@
         public function test_total_akhir(): void                                                                                  
         {                                                                                                                         
             $hasil = $this->pos->hitungTotal(58000);                                                                              
-            $this->assertEquals(57420, $hasil['total']);                                                                          
+            $this->assertEquals(63800, $hasil['total']);                                                                          
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
@@ -79,9 +79,9 @@
         public function test_kembalian_cukup(): void                                                                              
         {                                                                                                                         
             $hasil     = $this->pos->hitungTotal(58000);                                                                          
-            $bayar     = 60000;                                                                                                   
+            $bayar     = 70000;                                                                                                   
             $kembalian = $bayar - $hasil['total'];                                                                                
-            $this->assertEquals(2580, $kembalian);                                                                                
+            $this->assertEquals(6200, $kembalian);                                                                                
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       

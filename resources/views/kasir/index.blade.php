@@ -353,10 +353,10 @@
         const noticeEl = document.getElementById('diskonNoticeText');
 
         if (subtotal >= 100000) {
-            pctDiskon = 15;
-            diskon = Math.floor(subtotal * 0.15);
+            pctDiskon = 5;
+            diskon = Math.floor(subtotal * 0.05);
             noticeEl.innerHTML = '🌟 <strong>Selamat!</strong> Diskon maksimal 15% telah diterapkan!';
-        } else if (subtotal >= 50000) {
+        } else if (subtotal >= 300000) {
             pctDiskon = 10;
             diskon = Math.floor(subtotal * 0.10);
             const kekurangan = 100000 - subtotal;

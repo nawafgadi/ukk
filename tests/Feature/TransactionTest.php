@@ -52,7 +52,7 @@ class TransactionTest extends TestCase
             'stok'        => 10,
         ]);
 
-        // Subtotal = 120.000, Diskon 15% = 18.000, DPP = 102.000, Pajak 20% = 20.400, Total = 122.400, Bayar = 130.000
+        // Subtotal = 120.000, Diskon 10% = 12.000, DPP = 108.000, Pajak 20% = 21.600, Total = 129.600, Bayar = 130.000
         $payload = [
             'items' => [
                 [
@@ -60,7 +60,7 @@ class TransactionTest extends TestCase
                     'qty' => 2,
                 ],
             ],
-            'bayar' => 130000,
+            'bayar' => 150000,
         ];
 
         $response = $this->actingAs($kasir)->post('/kasir', $payload);
@@ -77,11 +77,11 @@ class TransactionTest extends TestCase
         $this->assertDatabaseHas('transactions', [
             'id'        => $transaksi->id,
             'user_id'   => $kasir->id,
-            'total'     => 122400,
-            'diskon'    => 18000,
-            'pajak'     => 20400,
-            'bayar'     => 130000,
-            'kembalian' => 7600,
+            'total'     => 136800,
+            'diskon'    => 6000,
+            'pajak'     => 22800,
+            'bayar'     => 150000,
+            'kembalian' => 13200,
         ]);
     }
 
