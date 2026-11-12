@@ -31,13 +31,14 @@
         public function store(Request $request)                                                                                   
         {                                                                                                                         
             $request->validate([                                                                                                  
-                'nama_produk' => 'required|string|max:100',                                                                       
+                'nama_produk' => 'required|string|max:100',
+                'kategori'    => 'required|string|max:50',                                                                       
                 'harga'       => 'required|integer|min:0',                                                                        
                 'stok'        => 'required|integer|min:0',                                                                        
                 'foto'        => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', // Maks 2MB                                   
             ]);                                                                                                                   
                                                                                                                                   
-            $data = $request->only(['nama_produk', 'harga', 'stok']);                                                             
+            $data = $request->only(['nama_produk', 'kategori', 'harga', 'stok']);                                                             
                                                                                                                                   
             // Jika user mengunggah foto                                                                                          
             if ($request->hasFile('foto')) {                                                                                      
@@ -65,14 +66,15 @@
         public function update(Request $request, string $id)                                                                      
         {                                                                                                                         
             $request->validate([                                                                                                  
-                'nama_produk' => 'required|string|max:100',                                                                       
+                'nama_produk' => 'required|string|max:100',
+                'kategori'    => 'required|string|max:50',                                                                       
                 'harga'       => 'required|integer|min:0',                                                                        
                 'stok'        => 'required|integer|min:0',                                                                        
                 'foto'        => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',                                               
             ]);                                                                                                                   
                                                                                                                                   
             $product = Product::findOrFail($id);                                                                                  
-            $data = $request->only(['nama_produk', 'harga', 'stok']);                                                             
+            $data = $request->only(['nama_produk', 'kategori', 'harga', 'stok']);                                                             
                                                                                                                                   
             // Jika ada foto baru yang diupload                                                                                   
             if ($request->hasFile('foto')) {                                                                                      

@@ -47,9 +47,21 @@
          */                                                                                                                       
         public function test_hitung_pajak_sepuluh_persen(): void                                                                  
         {                                                                                                                         
-            $hasil = $this->pos->hitungTotal(58000);                                                                              
-            $this->assertEquals(52200, $hasil['dpp']);                                                                            
-            $this->assertEquals(5220, $hasil['pajak']);                                                                           
+            $hasil = $this->pos->hitungTotal(58000);
+            $this->assertEquals(52200, $hasil['dpp']);
+            $this->assertEquals(5220, $hasil['pajak']);
+        }
+
+        /**
+         * TC-04B: Hitung Pajak 20% jika DPP >= 100.000.
+         */
+        public function test_hitung_pajak_duapuluh_persen_jika_dpp_seratus_ribu(): void
+        {
+            // Subtotal = 120.000, Diskon 15% = 18.000, DPP = 102.000 (>= 100rb) -> Pajak 20% = 20.400
+            $hasil = $this->pos->hitungTotal(120000);
+            $this->assertEquals(102000, $hasil['dpp']);
+            $this->assertEquals(20400, $hasil['pajak']);
+            $this->assertEquals(20, $hasil['persen_pajak']);
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       

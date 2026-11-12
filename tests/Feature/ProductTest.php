@@ -52,6 +52,7 @@ class ProductTest extends TestCase
 
         $dataProduk = [
             'nama_produk' => 'Beras Pandan Wangi 5kg',
+            'kategori'    => 'Makanan',
             'harga'       => 75000,
             'stok'        => 10,
         ];
@@ -81,7 +82,7 @@ class ProductTest extends TestCase
             $response = $this->actingAs($admin)->post('/products', []);                                                           
                                                                                                                                   
             // Memastikan ada error validasi untuk nama_produk, harga, dan stok                                                   
-            $response->assertSessionHasErrors(['nama_produk', 'harga', 'stok']);                                                  
+            $response->assertSessionHasErrors(['nama_produk', 'kategori', 'harga', 'stok']);                                                  
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
@@ -97,10 +98,11 @@ class ProductTest extends TestCase
                 'stok'        => 15,                                                                                              
             ]);                                                                                                                   
                                                                                                                                   
-            $response = $this->actingAs($admin)->put("/products/{$produk->id}", [                                                 
-                'nama_produk' => 'Minyak Goreng 1L (Promo)',                                                                      
-                'harga'       => 16500,                                                                                           
-                'stok'        => 20,                                                                                              
+            $response = $this->actingAs($admin)->put("/products/{$produk->id}", [
+                'nama_produk' => 'Minyak Goreng 1L (Promo)',
+                'kategori'    => 'Kebutuhan Rumah Tangga',
+                'harga'       => 16500,
+                'stok'        => 20,
             ]);                                                                                                                   
                                                                                                                                   
             $response->assertRedirect('/products');                                                                               
@@ -136,6 +138,7 @@ class ProductTest extends TestCase
             // Memastikan data sudah TIDAK ADA di database                                                                        
             $this->assertDatabaseMissing('products', [                                                                            
                 'id' => $produk->id,                                                                                              
-            ]);                                                                                                                   
+            ]);  
+                                                                                                                             
         }        
 }

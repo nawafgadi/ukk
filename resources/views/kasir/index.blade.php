@@ -34,10 +34,19 @@
                     </div>
                 </div>
 
+                <!-- Category Filter Pills -->
+                <div class="d-flex gap-2 mb-3 overflow-x-auto pb-1" id="categoryTabs">
+                    <button type="button" class="btn btn-sm btn-green rounded-pill px-3 cat-btn active" onclick="filterByCat('', this)">Semua</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cat-btn" onclick="filterByCat('Makanan', this)">🍛 Makanan</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cat-btn" onclick="filterByCat('Minuman', this)">🥤 Minuman</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cat-btn" onclick="filterByCat('Snack', this)">🍪 Snack</button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill px-3 cat-btn" onclick="filterByCat('Alat Rumah Tangga', this)">🧹 Alat Rumah Tangga</button>
+                </div>
+
                 <!-- Product Grid -->
                 <div class="row g-3" id="posProductGrid">
                     @forelse ($products as $product)
-                        <div class="col-6 col-sm-4 col-md-4 col-xl-3 pos-product-item">
+                        <div class="col-6 col-sm-4 col-md-4 col-xl-3 pos-product-item" data-category="{{ $product->kategori ?? 'Makanan' }}">
                             <div class="card-custom card-custom-hover h-100 p-2 p-sm-3 d-flex flex-column justify-content-between border">
                                 <div>
                                     <!-- Foto Produk di Kasir -->
@@ -49,9 +58,12 @@
                                         </div>
                                     @endif
 
-                                    <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <div class="d-flex justify-content-between align-items-start mb-1 gap-1">
                                         <span class="badge {{ $product->stok <= 5 ? 'bg-warning-subtle text-warning-emphasis' : 'bg-success-subtle text-success' }} rounded-pill px-2 py-1 small fw-semibold">
                                             Stok: {{ $product->stok }}
+                                        </span>
+                                        <span class="badge bg-light text-muted border rounded-pill px-1 py-1" style="font-size: 0.68rem;">
+                                            {{ $product->kategori ?? 'Umum' }}
                                         </span>
                                     </div>
                                     <h6 class="fw-bold text-dark mb-1 product-title text-truncate" title="{{ $product->nama_produk }}">
@@ -125,10 +137,10 @@
                             <span>Diskon (<span id="txtPctDiskon">0</span>%)</span>
                             <span class="fw-bold" id="txtDiskon">- Rp 0</span>
                         </div>
-                        <div class="d-flex justify-content-between small text-muted mb-2">
-                            <span>Pajak Resto (10%)</span>
-                            <span class="fw-semibold text-dark" id="txtPajak">Rp 0</span>
-                        </div>
+                         <div class="d-flex justify-content-between small text-muted mb-2">                                                            
+                             <span>Pajak Resto (<span id="txtPctPajak">10</span>%)</span>                                                              
+                            <span class="fw-semibold text-dark" id="txtPajak">Rp 0</span>                                                             
+                        </div>     
                         <hr class="my-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <span class="fw-bold text-dark fs-6">Total Tagihan</span>
@@ -188,12 +200,28 @@
         return 'Rp ' + Number(angka).toLocaleString('id-ID');
     }
 
+    let currentCat = '';
+
+    function filterByCat(cat, btn) {
+        currentCat = cat;
+        document.querySelectorAll('.cat-btn').forEach(b => {
+            b.classList.remove('btn-green', 'active');
+            b.classList.add('btn-outline-secondary');
+        });
+        btn.classList.remove('btn-outline-secondary');
+        btn.classList.add('btn-green', 'active');
+        filterPosProducts();
+    }
+
     function filterPosProducts() {
         const query = document.getElementById('posSearchInput').value.toLowerCase();
         const items = document.querySelectorAll('.pos-product-item');
         items.forEach(item => {
             const title = item.querySelector('.product-title').textContent.toLowerCase();
-            item.style.display = title.includes(query) ? '' : 'none';
+            const cat = item.getAttribute('data-category') || '';
+            const matchQuery = title.includes(query);
+            const matchCat = !currentCat || cat.includes(currentCat);
+            item.style.display = (matchQuery && matchCat) ? '' : 'none';
         });
     }
 
@@ -340,17 +368,21 @@
             noticeEl.innerHTML = 'Belanja min. Rp 50.000 untuk dapat Diskon 10%!';
         }
 
-        const dpp = subtotal - diskon;
-        const pajak = Math.floor(dpp * 0.10);
-        const total = dpp + pajak;
-
-        window.totalAkhir = total;
-
-        document.getElementById('txtSubtotal').textContent = formatRupiah(subtotal);
-        document.getElementById('txtPctDiskon').textContent = pctDiskon;
-        document.getElementById('txtDiskon').textContent = '- ' + formatRupiah(diskon);
-        document.getElementById('txtPajak').textContent = formatRupiah(pajak);
-        document.getElementById('txtTotal').textContent = formatRupiah(total);
+       const dpp = subtotal - diskon;                                                                                        
+                                                                                                                                  
+            // Aturan baru: Pajak 20% jika dpp >= 100.000, selain itu 10%                                                         
+            let pctPajak = (dpp >= 100000) ? 20 : 10;                                                                             
+            const pajak = Math.floor(dpp * (pctPajak / 100));                                                                     
+            const total = dpp + pajak;                                                                                            
+                                                                                                                                  
+            window.totalAkhir = total;                                                                                            
+                                                                                                                                  
+            document.getElementById('txtSubtotal').textContent  = formatRupiah(subtotal);                                         
+            document.getElementById('txtPctDiskon').textContent = pctDiskon;                                                      
+            document.getElementById('txtDiskon').textContent    = '- ' + formatRupiah(diskon);                                    
+            document.getElementById('txtPctPajak').textContent  = pctPajak; // ⬅️ Tambahkan baris ini                             
+            document.getElementById('txtPajak').textContent     = formatRupiah(pajak);                                            
+            document.getElementById('txtTotal').textContent     = formatRupiah(total); 
 
         hitungKembalian();
     }

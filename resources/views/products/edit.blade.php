@@ -51,6 +51,25 @@
                         @enderror
                     </div>
 
+                    <!-- Kategori Produk -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-dark small">
+                            Kategori Produk <span class="text-danger">*</span>
+                        </label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-light"><i class="bi bi-bookmark"></i></span>
+                            <select name="kategori" class="form-select @error('kategori') is-invalid @enderror" required>
+                                <option value="Makanan" {{ old('kategori', $product->kategori) == 'Makanan' ? 'selected' : '' }}>🍛 Makanan</option>
+                                <option value="Minuman" {{ old('kategori', $product->kategori) == 'Minuman' ? 'selected' : '' }}>🥤 Minuman</option>
+                                <option value="Snack / Jajanan" {{ old('kategori', $product->kategori) == 'Snack / Jajanan' ? 'selected' : '' }}>🍪 Snack / Jajanan</option>
+                                <option value="Alat Rumah Tangga" {{ old('kategori', $product->kategori) == 'Alat Rumah Tangga' ? 'selected' : '' }}>🧹 Alat Rumah Tangga</option>
+                            </select>
+                        </div>
+                        @error('kategori')
+                            <small class="text-danger mt-1 d-block">{{ $message }}</small>
+                        @enderror
+                    </div>
+
                     <!-- Harga Jual -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold text-dark small">

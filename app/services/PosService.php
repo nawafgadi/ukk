@@ -9,8 +9,8 @@
          */                                                                                                                       
         public function hitungDiskon(int $subtotal): int                                                                          
         {                                                                                                                         
-            if ($subtotal >= 100000) {                                                                                            
-                return (int) ($subtotal * 0.15); // Diskon 15%                                                                    
+        if ($subtotal >= 100000) {
+            return (int) ($subtotal * 0.15); // Diskon 15%                                                                    
             } elseif ($subtotal >= 50000) {                                                                                       
                 return (int) ($subtotal * 0.10); // Diskon 10%                                                                    
             } else {                                                                                                              
@@ -21,19 +21,27 @@
         /**                                                                                                                       
          * Menghitung total akhir transaksi termasuk pajak 10%.                                                                   
          */                                                                                                                       
+      /**                                                                                                                       
+         * Menghitung total akhir transaksi termasuk pajak bertingkat (10% atau 20%).                                             
+         */                                                                                                                       
         public function hitungTotal(int $subtotal): array                                                                         
         {                                                                                                                         
             $diskon = $this->hitungDiskon($subtotal);                                                                             
             $dpp    = $subtotal - $diskon;                                                                                        
-            $pajak  = (int) ($dpp * 0.10);                                                                                        
-            $total  = $dpp + $pajak;                                                                                              
+                                                                                                                                  
+            // Logika Pajak Bertingkat:                                                                                           
+            // Jika belanja (DPP) >= 100.000, pajak 20%. Jika di bawah itu, pajak 10%.                                            
+            $persenPajak = ($dpp >= 100000) ? 20 : 10;                                                                            
+            $pajak       = (int) ($dpp * ($persenPajak / 100));                                                                   
+            $total       = $dpp + $pajak;                                                                                         
                                                                                                                                   
             return [                                                                                                              
-                'subtotal' => $subtotal,                                                                                          
-                'diskon'   => $diskon,                                                                                            
-                'dpp'      => $dpp,                                                                                               
-                'pajak'    => $pajak,                                                                                             
-                'total'    => $total,                                                                                             
+                'subtotal'     => $subtotal,                                                                                      
+                'diskon'       => $diskon,                                                                                        
+                'dpp'          => $dpp,                                                                                           
+                'persen_pajak' => $persenPajak,                                                                                   
+                'pajak'        => $pajak,                                                                                         
+                'total'        => $total,                                                                                         
             ];                                                                                                                    
-        }                                                                                                                         
-    }  
+        } 
+    }

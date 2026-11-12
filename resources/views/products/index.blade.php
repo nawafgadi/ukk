@@ -58,13 +58,22 @@
     <!-- Search & Filter Card -->
     <div class="card-custom mb-4 p-3 bg-white">
         <div class="row g-2 align-items-center">
-            <div class="col-md-6 col-lg-5">
+            <div class="col-md-5 col-lg-4">
                 <div class="input-group">
                     <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
                     <input type="text" id="searchInput" class="form-control border-start-0 ps-0" placeholder="Cari nama produk..." onkeyup="filterProducts()">
                 </div>
             </div>
-            <div class="col-md-6 col-lg-7 text-md-end text-muted small">
+            <div class="col-md-4 col-lg-3">
+                <select id="kategoriFilter" class="form-select bg-light" onchange="filterProducts()">
+                    <option value="">Semua Kategori</option>
+                    <option value="Makanan">🍛 Makanan</option>
+                    <option value="Minuman">🥤 Minuman</option>
+                    <option value="Snack / Jajanan">🍪 Snack / Jajanan</option>
+                    <option value="Alat Rumah Tangga">🧹 Alat Rumah Tangga</option>
+                </select>
+            </div>
+            <div class="col-md-3 col-lg-5 text-md-end text-muted small">
                 <span>Total: <strong id="productCount" class="text-dark">{{ count($products) }}</strong> item terdaftar</span>
             </div>
         </div>
@@ -105,9 +114,14 @@
                     @endif                                                                                                        
                 </td>                                                                                                             
                                                                                                                                   
-                <td>                                                                                                              
-                    <div class="fw-bold text-dark product-name">{{ $product->nama_produk }}</div>                                 
-                    <small class="text-muted">Kode ID: #PRD-{{ str_pad($product->id, 4, '0', STR_PAD_LEFT) }}</small>             
+                <td>
+                    <div class="fw-bold text-dark product-name">{{ $product->nama_produk }}</div>
+                    <div class="d-flex align-items-center gap-1 mt-1">
+                        <span class="badge bg-light text-dark border rounded-pill px-2 py-0 small product-category">
+                            <i class="bi bi-tag-fill text-success me-1"></i>{{ $product->kategori ?? 'Makanan' }}
+                        </span>
+                        <small class="text-muted" style="font-size: 0.72rem;">#PRD-{{ str_pad($product->id, 4, '0', STR_PAD_LEFT) }}</small>
+                    </div>
                 </td>               
                             <td class="text-end">
                                 <span class="fw-bold text-success fs-6">
@@ -172,12 +186,19 @@
 <script>
     function filterProducts() {
         const query = document.getElementById('searchInput').value.toLowerCase();
+        const selectedKat = document.getElementById('kategoriFilter').value;
         const rows = document.querySelectorAll('.product-row');
         let visibleCount = 0;
 
         rows.forEach(row => {
             const name = row.querySelector('.product-name').textContent.toLowerCase();
-            if (name.includes(query)) {
+            const catBadge = row.querySelector('.product-category');
+            const category = catBadge ? catBadge.textContent.trim() : '';
+
+            const matchQuery = name.includes(query);
+            const matchKat = !selectedKat || category.includes(selectedKat);
+
+            if (matchQuery && matchKat) {
                 row.style.display = '';
                 visibleCount++;
             } else {
