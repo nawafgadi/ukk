@@ -11,12 +11,11 @@ return Application::configure(basePath: dirname(__DIR__))
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
-     ->withMiddleware(function (Middleware $middleware) {
-    $middleware->trustProxies(at: '*');   // <-- baris baru
-    $middleware->alias([
-        'admin' => \App\Http\Middleware\AdminMiddleware::class,
-        'kasir' => \App\Http\Middleware\KasirMiddleware::class,
-    ]);                                                                                                                     
+    ->withMiddleware(function (Middleware $middleware) {                                                                          
+        $middleware->alias([                                                                                                      
+            'admin' => \App\Http\Middleware\AdminMiddleware::class,                                                               
+            'kasir' => \App\Http\Middleware\KasirMiddleware::class,                                                               
+        ]);                                                                                                                       
         
     })
     ->withExceptions(function (Exceptions $exceptions): void {
@@ -24,5 +23,3 @@ return Application::configure(basePath: dirname(__DIR__))
             fn (Request $request) => $request->is('api/*') || $request->expectsJson(),
         );
     })->create();
-   
-
