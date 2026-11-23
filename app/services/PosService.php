@@ -9,9 +9,9 @@
          */                                                                                                                       
         public function hitungDiskon(int $subtotal): int                                                                          
         {                                                                                                                         
-        if ($subtotal >= 300000) {
+        if ($subtotal >= 100000) {
             return (int) ($subtotal * 0.10); // Diskon 10%                                                                    
-            } elseif ($subtotal >= 100000) {                                                                                       
+            } elseif ($subtotal >= 50000) {                                                                                       
                 return (int) ($subtotal * 0.05); // Diskon 5%                                                                    
             } else {                                                                                                              
                 return 0; // Tidak ada diskon                                                                                     
@@ -30,8 +30,8 @@
             $dpp    = $subtotal - $diskon;                                                                                        
                                                                                                                                   
             // Logika Pajak Bertingkat:                                                                                           
-            // Jika belanja (DPP) >= 100.000, pajak 20%. Jika di bawah itu, pajak 10%.                                            
-            $persenPajak = ($dpp >= 100000) ? 20 : 10;                                                                            
+            // Jika belanja (DPP) >= 50.000, pajak 20%. Jika di bawah itu, pajak 10%.                                            
+            $persenPajak = ($dpp >= 50000) ? 20 : 10;                                                                            
             $pajak       = (int) ($dpp * ($persenPajak / 100));                                                                   
             $total       = $dpp + $pajak;                                                                                         
                                                                                                                                   
