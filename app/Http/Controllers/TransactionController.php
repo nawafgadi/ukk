@@ -72,9 +72,9 @@
             $kembalian = $request->bayar - $kalkulasi['total'];                                                                   
                                                                                                                                   
             // Simpan transaksi secara atomik                                                                                     
-            DB::transaction(function () use ($kalkulasi, $items, $request, $kembalian) {                                          
+            $transaksi = DB::transaction(function () use ($kalkulasi, $items, $request, $kembalian) {                                          
                                                                                                                                   
-                $transaksi = Transaction::create([                                                                                
+                $trx = Transaction::create([                                                                                
                     'user_id'   => Auth::id(),                                                                                    
                     'tanggal'   => now(),                                                                                         
                     'total'     => $kalkulasi['total'],                                                                           
@@ -87,7 +87,7 @@
                 foreach ($items as $item) {                                                                                       
                     // Simpan detail transaksi                                                                                    
                     TransactionDetail::create([                                                                                   
-                        'transaction_id' => $transaksi->id,                                                                       
+                        'transaction_id' => $trx->id,                                                                       
                         'product_id'     => $item['product']->id,                                                                 
                         'jumlah'         => $item['qty'],                                                                         
                         'harga'          => $item['product']->harga,                                                              
@@ -96,15 +96,12 @@
                                                                                                                                   
                     // Kurangi stok produk                                                                                        
                     $item['product']->decrement('stok', $item['qty']);                                                            
-                }                                                                                                                 
+                }
+
+                return $trx;                                                                                                                 
             });                                                                                                                   
                                                                                                                                   
-            $transaksiTerakhir = Transaction::with('details.product')                                                             
-                                    ->where('user_id', Auth::id())                                                                
-                                    ->latest()                                                                                    
-                                    ->first();                                                                                    
-                                                                                                                                  
-            return redirect()->route('kasir.struk', $transaksiTerakhir->id);                                                      
+            return redirect()->route('kasir.struk', $transaksi->id);                                                      
         }      
         
          public function struk(string $id)                                                                                         

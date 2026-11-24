@@ -124,7 +124,7 @@
                     <!-- Incentive Hint Diskon Real-time -->
                     <div id="diskonNotice" class="alert alert-light border py-2 px-3 rounded-3 small mb-3 text-muted d-flex align-items-center gap-2">
                         <i class="bi bi-info-circle-fill text-success fs-6"></i>
-                        <span id="diskonNoticeText">Belanja min. Rp 100.000 untuk dapat Diskon!</span>
+                        <span id="diskonNoticeText">Belanja min. Rp 50.000 untuk dapat Diskon 10%!</span>
                     </div>
 
                     <!-- Rincian Kalkulasi Tagihan -->
@@ -353,19 +353,19 @@
         const noticeEl = document.getElementById('diskonNoticeText');
 
         if (subtotal >= 100000) {
+            pctDiskon = 15;
+            diskon = Math.floor(subtotal * 0.15);
+            noticeEl.innerHTML = '🌟 <strong>Selamat!</strong> Diskon maksimal 15% telah diterapkan!';
+        } else if (subtotal >= 50000) {
             pctDiskon = 10;
-            diskon = Math.floor(subtotal * 0.20);
-            noticeEl.innerHTML = '🌟 <strong>Selamat!</strong> Diskon maksimal 10% telah diterapkan!';
-        } else if (subtotal >= 30000) {
-            pctDiskon = 20;
-            diskon = Math.floor(subtotal * 0.20);
+            diskon = Math.floor(subtotal * 0.10);
             const kekurangan = 100000 - subtotal;
-            noticeEl.innerHTML = `🎉 <strong>Diskon 20% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon 10%!`;
+            noticeEl.innerHTML = `🎉 <strong>Diskon 10% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon 15%!`;
         } else if (subtotal > 0) {
             const kekurangan = 50000 - subtotal;
-            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon 20%</strong>!`;
+            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon 10%</strong>!`;
         } else {
-            noticeEl.innerHTML = 'Belanja min. Rp 100.000 untuk dapat Diskon!';
+            noticeEl.innerHTML = 'Belanja min. Rp 50.000 untuk dapat Diskon 10%!';
         }
 
        const dpp = subtotal - diskon;                                                                                        

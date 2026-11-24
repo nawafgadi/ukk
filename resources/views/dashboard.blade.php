@@ -112,7 +112,7 @@
                         <th>Waktu Transaksi</th>
                         <th>Petugas Kasir</th>
                         <th class="text-end">Diskon</th>
-                        <th class="text-end">Pajak (10%)</th>
+                        <th class="text-end">Pajak</th>
                         <th class="text-end">Total Akhir</th>
                         <th class="text-end">Tunai Bayar</th>
                         <th class="text-end">Kembalian</th>
