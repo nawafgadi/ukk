@@ -122,12 +122,6 @@
                     </div>
 
 
-                    <!-- Incentive Hint Diskon Real-time -->
-                    <div id="diskonNotice" class="alert alert-light border py-2 px-3 rounded-3 small mb-3 text-muted d-flex align-items-center gap-2">
-                        <i class="bi bi-info-circle-fill text-success fs-6"></i>
-                        <span id="diskonNoticeText">Belanja min. Rp {{ number_format($settings['diskon_tingkat_1_min'] ?? 50000, 0, ',', '.') }} untuk dapat Diskon {{ $settings['diskon_tingkat_1_persen'] ?? 10 }}%!</span>
-                    </div>
-
                     <!-- Rincian Kalkulasi Tagihan -->
                     <div class="p-3 rounded-3 mb-3" style="background: #f8fafc; border: 1px solid #e2e8f0;">
                         <div class="d-flex justify-content-between small text-muted mb-1">
@@ -366,17 +360,17 @@
         if (subtotal >= SETTING_POS.diskon2_min) {
             pctDiskon = SETTING_POS.diskon2_pct;
             diskon = Math.floor(subtotal * (pctDiskon / 100));
-            noticeEl.innerHTML = `🌟 <strong>Selamat!</strong> Diskon maksimal ${pctDiskon}% telah diterapkan!`;
+            if (noticeEl) noticeEl.innerHTML = `🌟 <strong>Selamat!</strong> Diskon maksimal ${pctDiskon}% telah diterapkan!`;
         } else if (subtotal >= SETTING_POS.diskon1_min) {
             pctDiskon = SETTING_POS.diskon1_pct;
             diskon = Math.floor(subtotal * (pctDiskon / 100));
             const kekurangan = SETTING_POS.diskon2_min - subtotal;
-            noticeEl.innerHTML = `🎉 <strong>Diskon ${pctDiskon}% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon ${SETTING_POS.diskon2_pct}%!`;
+            if (noticeEl) noticeEl.innerHTML = `🎉 <strong>Diskon ${pctDiskon}% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon ${SETTING_POS.diskon2_pct}%!`;
         } else if (subtotal > 0) {
             const kekurangan = SETTING_POS.diskon1_min - subtotal;
-            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon ${SETTING_POS.diskon1_pct}%</strong>!`;
+            if (noticeEl) noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon ${SETTING_POS.diskon1_pct}%</strong>!`;
         } else {
-            noticeEl.innerHTML = `Belanja min. ${formatRupiah(SETTING_POS.diskon1_min)} untuk dapat Diskon ${SETTING_POS.diskon1_pct}%!`;
+            if (noticeEl) noticeEl.innerHTML = `Belanja min. ${formatRupiah(SETTING_POS.diskon1_min)} untuk dapat Diskon ${SETTING_POS.diskon1_pct}%!`;
         }
 
         const dpp = subtotal - diskon;
