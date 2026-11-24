@@ -23,6 +23,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 // ==========================================
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/settings', [DashboardController::class, 'updateSettings'])->name('settings.update');
     Route::resource('products', ProductController::class)->except(['show']);
 });
 

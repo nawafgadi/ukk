@@ -21,7 +21,10 @@
                 <p class="text-muted small mb-0">Kelola katalog barang, pantau ketersediaan stok fisik, dan perbarui harga jual.</p>
             </div>
 
-            <div class="d-flex gap-2">
+            <div class="d-flex flex-wrap gap-2">
+                <a href="{{ route('dashboard') }}#setting-bisnis" class="btn btn-outline-success rounded-pill px-3 d-inline-flex align-items-center gap-2 fw-semibold">
+                    <i class="bi bi-sliders"></i> Setting Diskon & Pajak
+                </a>
                 <a href="{{ route('dashboard') }}" class="btn btn-outline-secondary rounded-pill px-3 d-inline-flex align-items-center gap-2 fw-semibold">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>

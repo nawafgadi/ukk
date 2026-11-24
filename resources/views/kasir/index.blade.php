@@ -124,7 +124,7 @@
                     <!-- Incentive Hint Diskon Real-time -->
                     <div id="diskonNotice" class="alert alert-light border py-2 px-3 rounded-3 small mb-3 text-muted d-flex align-items-center gap-2">
                         <i class="bi bi-info-circle-fill text-success fs-6"></i>
-                        <span id="diskonNoticeText">Belanja min. Rp 50.000 untuk dapat Diskon 10%!</span>
+                        <span id="diskonNoticeText">Belanja min. Rp {{ number_format($settings['diskon_tingkat_1_min'] ?? 50000, 0, ',', '.') }} untuk dapat Diskon {{ $settings['diskon_tingkat_1_persen'] ?? 10 }}%!</span>
                     </div>
 
                     <!-- Rincian Kalkulasi Tagihan -->
@@ -193,6 +193,16 @@
 </div>
 
 <script>
+    const SETTING_POS = {
+        diskon1_min: {{ $settings['diskon_tingkat_1_min'] ?? 50000 }},
+        diskon1_pct: {{ $settings['diskon_tingkat_1_persen'] ?? 10 }},
+        diskon2_min: {{ $settings['diskon_tingkat_2_min'] ?? 100000 }},
+        diskon2_pct: {{ $settings['diskon_tingkat_2_persen'] ?? 15 }},
+        pajak1_pct: {{ $settings['pajak_tingkat_1_persen'] ?? 10 }},
+        pajak2_min: {{ $settings['pajak_tingkat_2_min'] ?? 100000 }},
+        pajak2_pct: {{ $settings['pajak_tingkat_2_persen'] ?? 20 }},
+    };
+
     let keranjang = {};
     window.totalAkhir = 0;
 
@@ -352,37 +362,37 @@
         let diskon = 0;
         const noticeEl = document.getElementById('diskonNoticeText');
 
-        if (subtotal >= 100000) {
-            pctDiskon = 15;
-            diskon = Math.floor(subtotal * 0.15);
-            noticeEl.innerHTML = '🌟 <strong>Selamat!</strong> Diskon maksimal 15% telah diterapkan!';
-        } else if (subtotal >= 50000) {
-            pctDiskon = 10;
-            diskon = Math.floor(subtotal * 0.10);
-            const kekurangan = 100000 - subtotal;
-            noticeEl.innerHTML = `🎉 <strong>Diskon 10% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon 15%!`;
+        if (subtotal >= SETTING_POS.diskon2_min) {
+            pctDiskon = SETTING_POS.diskon2_pct;
+            diskon = Math.floor(subtotal * (pctDiskon / 100));
+            noticeEl.innerHTML = `🌟 <strong>Selamat!</strong> Diskon maksimal ${pctDiskon}% telah diterapkan!`;
+        } else if (subtotal >= SETTING_POS.diskon1_min) {
+            pctDiskon = SETTING_POS.diskon1_pct;
+            diskon = Math.floor(subtotal * (pctDiskon / 100));
+            const kekurangan = SETTING_POS.diskon2_min - subtotal;
+            noticeEl.innerHTML = `🎉 <strong>Diskon ${pctDiskon}% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon ${SETTING_POS.diskon2_pct}%!`;
         } else if (subtotal > 0) {
-            const kekurangan = 50000 - subtotal;
-            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon 10%</strong>!`;
+            const kekurangan = SETTING_POS.diskon1_min - subtotal;
+            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon ${SETTING_POS.diskon1_pct}%</strong>!`;
         } else {
-            noticeEl.innerHTML = 'Belanja min. Rp 50.000 untuk dapat Diskon 10%!';
+            noticeEl.innerHTML = `Belanja min. ${formatRupiah(SETTING_POS.diskon1_min)} untuk dapat Diskon ${SETTING_POS.diskon1_pct}%!`;
         }
 
-       const dpp = subtotal - diskon;                                                                                        
-                                                                                                                                  
-            // Aturan baru: Pajak 20% jika dpp >= 100.000, selain itu 10%                                                         
-            let pctPajak = (dpp >= 100000) ? 20 : 10;                                                                             
-            const pajak = Math.floor(dpp * (pctPajak / 100));                                                                     
-            const total = dpp + pajak;                                                                                            
-                                                                                                                                  
-            window.totalAkhir = total;                                                                                            
-                                                                                                                                  
-            document.getElementById('txtSubtotal').textContent  = formatRupiah(subtotal);                                         
-            document.getElementById('txtPctDiskon').textContent = pctDiskon;                                                      
-            document.getElementById('txtDiskon').textContent    = '- ' + formatRupiah(diskon);                                    
-            document.getElementById('txtPctPajak').textContent  = pctPajak; // ⬅️ Tambahkan baris ini                             
-            document.getElementById('txtPajak').textContent     = formatRupiah(pajak);                                            
-            document.getElementById('txtTotal').textContent     = formatRupiah(total); 
+        const dpp = subtotal - diskon;
+
+        // Aturan Pajak Dinamis:
+        let pctPajak = (dpp >= SETTING_POS.pajak2_min) ? SETTING_POS.pajak2_pct : SETTING_POS.pajak1_pct;
+        const pajak = Math.floor(dpp * (pctPajak / 100));
+        const total = dpp + pajak;
+
+        window.totalAkhir = total;
+
+        document.getElementById('txtSubtotal').textContent  = formatRupiah(subtotal);
+        document.getElementById('txtPctDiskon').textContent = pctDiskon;
+        document.getElementById('txtDiskon').textContent    = '- ' + formatRupiah(diskon);
+        document.getElementById('txtPctPajak').textContent  = pctPajak;
+        document.getElementById('txtPajak').textContent     = formatRupiah(pajak);
+        document.getElementById('txtTotal').textContent     = formatRupiah(total);
 
         hitungKembalian();
     }

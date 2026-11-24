@@ -1,47 +1,56 @@
-<?php                                                                                                                         
-                                                                                                                                  
-    namespace App\Services;                                                                                                       
-                                                                                                                                  
-    class PosService                                                                                                              
-    {                                                                                                                             
-        /**                                                                                                                       
-         * Menghitung diskon bertingkat berdasarkan subtotal.                                                                     
-         */                                                                                                                       
-        public function hitungDiskon(int $subtotal): int                                                                          
-        {                                                                                                                         
-        if ($subtotal >= 100000) {
-            return (int) ($subtotal * 0.15); // Diskon 15%                                                                    
-            } elseif ($subtotal >= 50000) {                                                                                       
-                return (int) ($subtotal * 0.10); // Diskon 10%                                                                    
-            } else {                                                                                                              
-                return 0; // Tidak ada diskon                                                                                     
-            }                                                                                                                     
-        }                                                                                                                         
-                                                                                                                                  
-        /**                                                                                                                       
-         * Menghitung total akhir transaksi termasuk pajak 10%.                                                                   
-         */                                                                                                                       
-      /**                                                                                                                       
-         * Menghitung total akhir transaksi termasuk pajak bertingkat (10% atau 20%).                                             
-         */                                                                                                                       
-        public function hitungTotal(int $subtotal): array                                                                         
-        {                                                                                                                         
-            $diskon = $this->hitungDiskon($subtotal);                                                                             
-            $dpp    = $subtotal - $diskon;                                                                                        
-                                                                                                                                  
-            // Logika Pajak Bertingkat:                                                                                           
-            // Jika belanja (DPP) >= 100.000, pajak 20%. Jika di bawah itu, pajak 10%.                                            
-            $persenPajak = ($dpp >= 100000) ? 20 : 10;                                                                            
-            $pajak       = (int) ($dpp * ($persenPajak / 100));                                                                   
-            $total       = $dpp + $pajak;                                                                                         
-                                                                                                                                  
-            return [                                                                                                              
-                'subtotal'     => $subtotal,                                                                                      
-                'diskon'       => $diskon,                                                                                        
-                'dpp'          => $dpp,                                                                                           
-                'persen_pajak' => $persenPajak,                                                                                   
-                'pajak'        => $pajak,                                                                                         
-                'total'        => $total,                                                                                         
-            ];                                                                                                                    
-        } 
+<?php
+
+namespace App\Services;
+
+use App\Models\Setting;
+
+class PosService
+{
+    /**
+     * Menghitung diskon bertingkat berdasarkan subtotal (membaca konfigurasi dinamis).
+     */
+    public function hitungDiskon(int $subtotal): int
+    {
+        $settings = Setting::getAllSettings();
+        $minTingkat2    = $settings['diskon_tingkat_2_min'];
+        $persenTingkat2 = $settings['diskon_tingkat_2_persen'] / 100;
+        $minTingkat1    = $settings['diskon_tingkat_1_min'];
+        $persenTingkat1 = $settings['diskon_tingkat_1_persen'] / 100;
+
+        if ($subtotal >= $minTingkat2) {
+            return (int) ($subtotal * $persenTingkat2);
+        } elseif ($subtotal >= $minTingkat1) {
+            return (int) ($subtotal * $persenTingkat1);
+        } else {
+            return 0; // Tidak ada diskon
+        }
     }
+
+    /**
+     * Menghitung total akhir transaksi termasuk pajak bertingkat (membaca konfigurasi dinamis).
+     */
+    public function hitungTotal(int $subtotal): array
+    {
+        $settings = Setting::getAllSettings();
+        $diskon = $this->hitungDiskon($subtotal);
+        $dpp    = $subtotal - $diskon;
+
+        $pajakTingkat2Min    = $settings['pajak_tingkat_2_min'];
+        $pajakTingkat2Persen = $settings['pajak_tingkat_2_persen'];
+        $pajakTingkat1Persen = $settings['pajak_tingkat_1_persen'];
+
+        // Logika Pajak Bertingkat Dinamis:
+        $persenPajak = ($dpp >= $pajakTingkat2Min) ? $pajakTingkat2Persen : $pajakTingkat1Persen;
+        $pajak       = (int) ($dpp * ($persenPajak / 100));
+        $total       = $dpp + $pajak;
+
+        return [
+            'subtotal'     => $subtotal,
+            'diskon'       => $diskon,
+            'dpp'          => $dpp,
+            'persen_pajak' => $persenPajak,
+            'pajak'        => $pajak,
+            'total'        => $total,
+        ];
+    }
+}

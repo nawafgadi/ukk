@@ -90,6 +90,147 @@
         </div>
     </div>
 
+    <!-- Pengaturan Diskon & Pajak (Admin Setting Panel) -->
+    <div class="card-custom mb-4 overflow-hidden" id="setting-bisnis" style="border: 1.5px solid rgba(16, 185, 129, 0.25);">
+        <div class="p-4 bg-white border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2">
+            <div>
+                <h5 class="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                    <i class="bi bi-sliders2-vertical text-success"></i> Pengaturan Aturan Bisnis (Diskon & Pajak)
+                </h5>
+                <small class="text-muted">Konfigurasi persentase diskon belanja dan tarif pajak resto secara dinamis tanpa perlu ubah kode program.</small>
+            </div>
+            <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill small fw-semibold">
+                <i class="bi bi-shield-lock-fill me-1"></i> Khusus Admin
+            </span>
+        </div>
+
+        <div class="p-4 bg-white">
+            <form action="{{ route('settings.update') }}" method="POST">
+                @csrf
+                <div class="row g-4">
+                    <!-- Kolom 1: Diskon Bertingkat -->
+                    <div class="col-12 col-lg-6">
+                        <div class="p-3 rounded-4 h-100" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: #ecfdf5; color: var(--primary-green-dark); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                                    <i class="bi bi-tag-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">Skema Diskon Bertingkat</h6>
+                                    <small class="text-muted">Dipotong dari Subtotal Kotor belanja</small>
+                                </div>
+                            </div>
+
+                            <!-- Diskon Tingkat 1 -->
+                            <div class="card p-3 mb-3 border-0 bg-white shadow-sm rounded-3">
+                                <span class="badge bg-light text-dark border mb-2 align-self-start fw-semibold">Tingkat 1 (Menengah)</span>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label class="form-label small text-muted mb-1">Minimal Belanja (Rp)</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-light">Rp</span>
+                                            <input type="number" name="diskon_tingkat_1_min" class="form-control fw-bold" value="{{ $settings['diskon_tingkat_1_min'] ?? 50000 }}" required min="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <label class="form-label small text-muted mb-1">Persen Potongan</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" name="diskon_tingkat_1_persen" class="form-control fw-bold text-success" value="{{ $settings['diskon_tingkat_1_persen'] ?? 10 }}" required min="0" max="100">
+                                            <span class="input-group-text bg-light fw-bold">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Diskon Tingkat 2 -->
+                            <div class="card p-3 border-0 bg-white shadow-sm rounded-3">
+                                <span class="badge bg-light text-dark border mb-2 align-self-start fw-semibold">Tingkat 2 (Maksimal)</span>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label class="form-label small text-muted mb-1">Minimal Belanja (Rp)</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-light">Rp</span>
+                                            <input type="number" name="diskon_tingkat_2_min" class="form-control fw-bold" value="{{ $settings['diskon_tingkat_2_min'] ?? 100000 }}" required min="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <label class="form-label small text-muted mb-1">Persen Potongan</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" name="diskon_tingkat_2_persen" class="form-control fw-bold text-success" value="{{ $settings['diskon_tingkat_2_persen'] ?? 15 }}" required min="0" max="100">
+                                            <span class="input-group-text bg-light fw-bold">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kolom 2: Pajak Bertingkat -->
+                    <div class="col-12 col-lg-6">
+                        <div class="p-3 rounded-4 h-100" style="background: #f8fafc; border: 1px solid #e2e8f0;">
+                            <div class="d-flex align-items-center gap-2 mb-3">
+                                <div style="width: 36px; height: 36px; border-radius: 10px; background: #eff6ff; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                                    <i class="bi bi-bank2"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">Skema Pajak Resto</h6>
+                                    <small class="text-muted">Dikenakan atas DPP (setelah dipotong diskon)</small>
+                                </div>
+                            </div>
+
+                            <!-- Pajak Standar -->
+                            <div class="card p-3 mb-3 border-0 bg-white shadow-sm rounded-3">
+                                <span class="badge bg-light text-dark border mb-2 align-self-start fw-semibold">Tarif Pajak Standar / Normal</span>
+                                <div class="row g-2">
+                                    <div class="col-12">
+                                        <label class="form-label small text-muted mb-1">Persentase Pajak Dasar</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" name="pajak_tingkat_1_persen" class="form-control fw-bold text-primary" value="{{ $settings['pajak_tingkat_1_persen'] ?? 10 }}" required min="0" max="100">
+                                            <span class="input-group-text bg-light fw-bold">%</span>
+                                        </div>
+                                        <small class="text-muted" style="font-size: 0.72rem;">Diterapkan bila belanja bersih (DPP) di bawah ambang batas transaksi tinggi.</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pajak Bertingkat Tinggi -->
+                            <div class="card p-3 border-0 bg-white shadow-sm rounded-3">
+                                <span class="badge bg-light text-dark border mb-2 align-self-start fw-semibold">Tarif Pajak Transaksi Tinggi</span>
+                                <div class="row g-2">
+                                    <div class="col-7">
+                                        <label class="form-label small text-muted mb-1">Ambang Batas DPP (Rp)</label>
+                                        <div class="input-group input-group-sm">
+                                            <span class="input-group-text bg-light">Rp</span>
+                                            <input type="number" name="pajak_tingkat_2_min" class="form-control fw-bold" value="{{ $settings['pajak_tingkat_2_min'] ?? 100000 }}" required min="0">
+                                        </div>
+                                    </div>
+                                    <div class="col-5">
+                                        <label class="form-label small text-muted mb-1">Tarif Pajak</label>
+                                        <div class="input-group input-group-sm">
+                                            <input type="number" name="pajak_tingkat_2_persen" class="form-control fw-bold text-primary" value="{{ $settings['pajak_tingkat_2_persen'] ?? 20 }}" required min="0" max="100">
+                                            <span class="input-group-text bg-light fw-bold">%</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tombol Simpan -->
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 mt-4 pt-3 border-top">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle text-success me-1"></i>
+                        Perubahan langsung tersimpan ke database & kasir otomatis membaca aturan terbaru tanpa restart server.
+                    </small>
+                    <button type="submit" class="btn btn-green rounded-pill px-4 py-2 d-inline-flex align-items-center gap-2 fw-semibold">
+                        <i class="bi bi-floppy-fill"></i> Simpan Pengaturan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Recent Transactions Table Section -->
     <div class="card-custom overflow-hidden">
         <div class="p-4 border-bottom d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-2 bg-white">

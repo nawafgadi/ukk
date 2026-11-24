@@ -8,6 +8,7 @@
     use App\Models\Product;                                                                                                       
     use App\Models\Transaction;                                                                                                   
     use App\Models\TransactionDetail;                                                                                             
+    use App\Models\Setting;                                                                                             
     use App\Services\PosService;                                                                                                  
                                                                                                                                   
     class TransactionController extends Controller                                                                                
@@ -25,7 +26,8 @@
         public function index()                                                                                                   
         {                                                                                                                         
             $products = Product::where('stok', '>', 0)->get();                                                                    
-            return view('kasir.index', compact('products'));                                                                      
+            $settings = Setting::getAllSettings();
+            return view('kasir.index', compact('products', 'settings'));                                                                      
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
