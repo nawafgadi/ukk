@@ -121,6 +121,19 @@
                         </table>
                     </div>
 
+                    <!-- Info Skema Pajak & Diskon Dinamis -->
+                    <div class="d-flex justify-content-between align-items-center bg-white px-3 py-2 rounded-3 border mb-2 small text-muted shadow-sm">
+                        <span style="font-size: 0.78rem;">
+                            <i class="bi bi-bank2 text-primary me-1"></i> Pajak: <strong class="text-dark"><span id="lblPajakAktif">{{ $settings['pajak_tingkat_1_persen'] ?? 10 }}</span>%</strong>
+                            @if(($settings['pajak_tingkat_2_persen'] ?? 20) != ($settings['pajak_tingkat_1_persen'] ?? 10))
+                                <span class="badge bg-light text-muted border ms-1" style="font-size: 0.7rem;">&ge; Rp {{ number_format($settings['pajak_tingkat_2_min'] ?? 100000, 0, ',', '.') }}: {{ $settings['pajak_tingkat_2_persen'] ?? 20 }}%</span>
+                            @endif
+                        </span>
+                        <span style="font-size: 0.78rem;">
+                            <i class="bi bi-tag-fill text-success me-1"></i> Diskon: <strong class="text-dark">{{ $settings['diskon_tingkat_1_persen'] ?? 10 }}% & {{ $settings['diskon_tingkat_2_persen'] ?? 15 }}%</strong>
+                        </span>
+                    </div>
+
                     <!-- Incentive Hint Diskon Real-time -->
                     <div id="diskonNotice" class="alert alert-light border py-2 px-3 rounded-3 small mb-3 text-muted d-flex align-items-center gap-2">
                         <i class="bi bi-info-circle-fill text-success fs-6"></i>
@@ -138,7 +151,7 @@
                             <span class="fw-bold" id="txtDiskon">- Rp 0</span>
                         </div>
                          <div class="d-flex justify-content-between small text-muted mb-2">                                                            
-                             <span>Pajak Resto (<span id="txtPctPajak">10</span>%)</span>                                                              
+                             <span>Pajak Resto (<span id="txtPctPajak">{{ $settings['pajak_tingkat_1_persen'] ?? 10 }}</span>%)</span>                                                              
                             <span class="fw-semibold text-dark" id="txtPajak">Rp 0</span>                                                             
                         </div>     
                         <hr class="my-2">
@@ -195,7 +208,7 @@
 <script>
     const SETTING_POS = {
         diskon1_min: {{ $settings['diskon_tingkat_1_min'] ?? 50000 }},
-        diskon1_pct: {{ $settings['diskon_tingkat_1_persen'] ?? 10 }},
+        diskon1_pct: {{ $settings['diskon_tingkat_1_persen'] ?? 15 }},
         diskon2_min: {{ $settings['diskon_tingkat_2_min'] ?? 100000 }},
         diskon2_pct: {{ $settings['diskon_tingkat_2_persen'] ?? 15 }},
         pajak1_pct: {{ $settings['pajak_tingkat_1_persen'] ?? 10 }},
@@ -454,5 +467,10 @@
         document.getElementById('inputBayar').value = nominal;
         hitungKembalian();
     }
+
+    // Jalankan kalkulasi awal saat halaman kasir dibuka agar tarif pajak & diskon langsung sinkron dengan database
+    document.addEventListener('DOMContentLoaded', () => {
+        hitungKalkulasi(0);
+    });
 </script>
 @endsection

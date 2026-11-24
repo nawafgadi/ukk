@@ -144,8 +144,12 @@
                     </div>
                 @endif
 
+                @php
+                    $dppStruk = $subtotalMurni - $transaksi->diskon;
+                    $persenPajakStruk = $dppStruk > 0 ? round(($transaksi->pajak / $dppStruk) * 100) : 10;
+                @endphp
                 <div class="d-flex justify-content-between text-muted mb-1">
-                    <span>Pajak (10%)</span>
+                    <span>Pajak ({{ $persenPajakStruk }}%)</span>
                     <span class="text-dark">Rp {{ number_format($transaksi->pajak, 0, ',', '.') }}</span>
                 </div>
 
