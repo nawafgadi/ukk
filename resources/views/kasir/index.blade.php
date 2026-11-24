@@ -121,18 +121,6 @@
                         </table>
                     </div>
 
-                    <!-- Info Skema Pajak & Diskon Dinamis -->
-                    <div class="d-flex justify-content-between align-items-center bg-white px-3 py-2 rounded-3 border mb-2 small text-muted shadow-sm">
-                        <span style="font-size: 0.78rem;">
-                            <i class="bi bi-bank2 text-primary me-1"></i> Pajak: <strong class="text-dark"><span id="lblPajakAktif">{{ $settings['pajak_tingkat_1_persen'] ?? 10 }}</span>%</strong>
-                            @if(($settings['pajak_tingkat_2_persen'] ?? 20) != ($settings['pajak_tingkat_1_persen'] ?? 10))
-                                <span class="badge bg-light text-muted border ms-1" style="font-size: 0.7rem;">&ge; Rp {{ number_format($settings['pajak_tingkat_2_min'] ?? 100000, 0, ',', '.') }}: {{ $settings['pajak_tingkat_2_persen'] ?? 20 }}%</span>
-                            @endif
-                        </span>
-                        <span style="font-size: 0.78rem;">
-                            <i class="bi bi-tag-fill text-success me-1"></i> Diskon: <strong class="text-dark">{{ $settings['diskon_tingkat_1_persen'] ?? 10 }}% & {{ $settings['diskon_tingkat_2_persen'] ?? 15 }}%</strong>
-                        </span>
-                    </div>
 
                     <!-- Incentive Hint Diskon Real-time -->
                     <div id="diskonNotice" class="alert alert-light border py-2 px-3 rounded-3 small mb-3 text-muted d-flex align-items-center gap-2">
