@@ -354,16 +354,16 @@
 
         if (subtotal >= 100000) {
             pctDiskon = 10;
-            diskon = Math.floor(subtotal * 0.10);
+            diskon = Math.floor(subtotal * 0.20);
             noticeEl.innerHTML = '🌟 <strong>Selamat!</strong> Diskon maksimal 10% telah diterapkan!';
-        } else if (subtotal >= 50000) {
-            pctDiskon = 5;
-            diskon = Math.floor(subtotal * 0.05);
+        } else if (subtotal >= 30000) {
+            pctDiskon = 20;
+            diskon = Math.floor(subtotal * 0.20);
             const kekurangan = 100000 - subtotal;
-            noticeEl.innerHTML = `🎉 <strong>Diskon 5% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon 10%!`;
+            noticeEl.innerHTML = `🎉 <strong>Diskon 20% aktif!</strong> Tambah ${formatRupiah(kekurangan)} lagi untuk dapat Diskon 10%!`;
         } else if (subtotal > 0) {
             const kekurangan = 50000 - subtotal;
-            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon 5%</strong>!`;
+            noticeEl.innerHTML = `Belanja <strong>${formatRupiah(kekurangan)}</strong> lagi untuk mendapatkan <strong>Diskon 20%</strong>!`;
         } else {
             noticeEl.innerHTML = 'Belanja min. Rp 100.000 untuk dapat Diskon!';
         }

@@ -10,12 +10,12 @@
         public function hitungDiskon(int $subtotal): int                                                                          
         {                                                                                                                         
         if ($subtotal >= 300000) {
-            return (int) ($subtotal * 0.10); // Diskon 10%                                                                    
-            } elseif ($subtotal >= 100000) {                                                                                       
-                return (int) ($subtotal * 0.05); // Diskon 5%                                                                    
-            } else {                                                                                                              
-                return 0; // Tidak ada diskon                                                                                     
-            }                                                                                                                     
+            return (int) ($subtotal * 0.10); // Diskon 10%
+        } elseif ($subtotal >= 100000) {
+            return (int) ($subtotal * 0.05); // Diskon 5%
+        } else {
+            return 0; // Tidak ada diskon
+        }                                                                                                                     
         }                                                                                                                         
                                                                                                                                   
         /**                                                                                                                       
